@@ -37,7 +37,27 @@ export function CrosswordPuzzlePage({ vocabularySet, progress, updateProgress, s
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>, row: number, col: number) => {
     if (event.key === 'Backspace') {
       event.preventDefault();
-      writeCell(row, col, '');
+      if (answers[cellKey({ row, col })]) {
+        writeCell(row, col, '');
+        return;
+      }
+      const previous = getRelativeCell(row, col, -1);
+      if (previous) {
+        writeCell(previous.row, previous.col, '');
+        focusCell(previous.row, previous.col);
+      }
+      return;
+    }
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      const previous = getRelativeCell(row, col, -1);
+      if (previous) focusCell(previous.row, previous.col);
+      return;
+    }
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      const next = getRelativeCell(row, col, 1);
+      if (next) focusCell(next.row, next.col);
       return;
     }
     if (/^[a-zA-Z]$/.test(event.key)) {
@@ -47,12 +67,20 @@ export function CrosswordPuzzlePage({ vocabularySet, progress, updateProgress, s
     }
   };
 
-  const focusNext = (row: number, col: number) => {
-    if (!activeEntry) return;
+  const getRelativeCell = (row: number, col: number, offset: -1 | 1) => {
+    if (!activeEntry) return null;
     const cells = cellsForEntry(activeEntry);
     const index = cells.findIndex((cell) => cell.row === row && cell.col === col);
-    const next = cells[index + 1];
-    if (next) document.getElementById(inputId(next.row, next.col))?.focus();
+    return cells[index + offset] ?? null;
+  };
+
+  const focusCell = (row: number, col: number) => {
+    document.getElementById(inputId(row, col))?.focus();
+  };
+
+  const focusNext = (row: number, col: number) => {
+    const next = getRelativeCell(row, col, 1);
+    if (next) focusCell(next.row, next.col);
   };
 
   const checkAnswers = () => {

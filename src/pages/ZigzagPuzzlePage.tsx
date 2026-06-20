@@ -27,7 +27,14 @@ export function ZigzagPuzzlePage({ vocabularySet, progress, updateProgress, setP
   const allDone = vocabularySet.items.length > 0 && found.length === vocabularySet.items.length;
 
   const chooseCell = (point: GridPoint) => {
-    if (foundKeys.has(pointKey(point)) || selectedKeys.has(pointKey(point))) return;
+    if (foundKeys.has(pointKey(point))) return;
+    if (selectedKeys.has(pointKey(point))) {
+      const selectedIndex = selected.findIndex((cell) => cell.row === point.row && cell.col === point.col);
+      setSelected((current) => current.slice(0, selectedIndex));
+      setTone('info');
+      setMessage('Letter removed. Keep building your word.');
+      return;
+    }
     if (selected.length > 0 && !areAdjacent(selected[selected.length - 1], point)) {
       setTone('try');
       setMessage('Almost! The next letter needs to touch the last letter you picked.');
