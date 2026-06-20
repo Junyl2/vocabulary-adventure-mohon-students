@@ -72,9 +72,9 @@ export function TeacherSetupPage({ vocabularySet, onVocabularyChange, onProgress
     setJsonText(text);
     try {
       await navigator.clipboard.writeText(text);
-      setMessage('Export JSON is ready and copied to the clipboard.');
+      setMessage('Backup is ready and copied. Save this text if you want to use the same vocabulary set on another laptop.');
     } catch {
-      setMessage('Export JSON is ready below.');
+      setMessage('Backup is ready below. Save this text if you want to use the same vocabulary set on another laptop.');
     }
   };
 
@@ -82,9 +82,9 @@ export function TeacherSetupPage({ vocabularySet, onVocabularyChange, onProgress
     try {
       const next = normalizeVocabularySet(JSON.parse(jsonText));
       setDraft(next);
-      setMessage('Imported JSON. Review it, then click Save Vocabulary Set.');
+      setMessage('Backup loaded. Review the words, then click Save Vocabulary Set.');
     } catch {
-      setMessage('Import did not work. Please paste valid JSON.');
+      setMessage('Backup could not be loaded. Please paste the full backup text and try again.');
     }
   };
 
@@ -139,10 +139,13 @@ export function TeacherSetupPage({ vocabularySet, onVocabularyChange, onProgress
           <div className="mt-4 grid gap-2">
             <button className="secondary-button" onClick={resetSample}>Reset to Sample Set</button>
             <button className="secondary-button border-rose-400 text-rose-700 hover:bg-rose-50" onClick={clearAll}>Clear All Data</button>
-            <button className="secondary-button" onClick={exportJson}>Export JSON</button>
-            <button className="game-button" onClick={importJson}>Import JSON</button>
+            <button className="secondary-button" onClick={exportJson}>Save Backup</button>
+            <button className="game-button" onClick={importJson}>Load Backup</button>
           </div>
-          <textarea className="mt-3 min-h-40 w-full rounded-2xl border-4 border-cyan-100 p-3 font-mono text-sm" value={jsonText} onChange={(event) => setJsonText(event.target.value)} placeholder="Export appears here. Paste JSON here to import." />
+          <p className="mt-4 rounded-2xl bg-cyan-50 p-3 text-sm font-bold text-cyan-950">
+            Backups help you move this vocabulary set to another laptop or save a copy before clearing data.
+          </p>
+          <textarea className="mt-3 min-h-40 w-full rounded-2xl border-4 border-cyan-100 p-3 font-mono text-sm" value={jsonText} onChange={(event) => setJsonText(event.target.value)} placeholder="Backup text appears here. Paste backup text here to load it." />
         </section>
 
         <section className="panel">
