@@ -12,14 +12,15 @@ type CrosswordProps = {
 };
 
 export function CrosswordPuzzlePage({ vocabularySet, progress, updateProgress, setPage }: CrosswordProps) {
-  const puzzle = useMemo(() => generateCrosswordPuzzle(vocabularySet.items), [vocabularySet]);
+  const crosswordItems = vocabularySet.crosswordItems;
+  const puzzle = useMemo(() => generateCrosswordPuzzle(crosswordItems), [crosswordItems]);
   const [activeEntryId, setActiveEntryId] = useState<number | null>(puzzle.entries[0]?.id ?? null);
   const [message, setMessage] = useState('Choose a clue, then type the answer in the puzzle.');
   const [tone, setTone] = useState<'info' | 'good' | 'try'>('info');
   const answers = progress.crosswordAnswers;
   const activeEntry = puzzle.entries.find((entry) => entry.id === activeEntryId) ?? puzzle.entries[0];
   const completeWords = getCompleteWords(puzzle.entries, answers);
-  const allDone = vocabularySet.items.length > 0 && completeWords.length + puzzle.extraPractice.length === vocabularySet.items.length;
+  const allDone = crosswordItems.length > 0 && completeWords.length === crosswordItems.length;
   const activeKeys = new Set(activeEntry ? cellsForEntry(activeEntry).map(cellKey) : []);
 
   const writeCell = (row: number, col: number, value: string) => {
@@ -116,7 +117,7 @@ export function CrosswordPuzzlePage({ vocabularySet, progress, updateProgress, s
     setMessage('Fresh crossword! Start with any clue you like.');
   };
 
-  if (!vocabularySet.items.length) {
+  if (!crosswordItems.length) {
     return (
       <section className="panel text-center">
         <h2 className="text-4xl font-black">Crossword Puzzle</h2>
@@ -134,7 +135,7 @@ export function CrosswordPuzzlePage({ vocabularySet, progress, updateProgress, s
             <h2 className="text-4xl font-black">Crossword Puzzle</h2>
             <p className="mt-2 text-lg font-bold text-slate-700">Use the clues to type each vocabulary word into the crossword.</p>
           </div>
-          <div className="rounded-3xl bg-amber-100 px-5 py-3 text-xl font-black text-amber-950">{completeWords.length} of {vocabularySet.items.length} words complete</div>
+          <div className="rounded-3xl bg-amber-100 px-5 py-3 text-xl font-black text-amber-950">{completeWords.length} of {crosswordItems.length} words complete</div>
         </div>
 
         <div className="mt-5 pb-2">
@@ -187,7 +188,7 @@ export function CrosswordPuzzlePage({ vocabularySet, progress, updateProgress, s
       <aside className="flex flex-col gap-4">
         <section className="panel">
           <h3 className="text-2xl font-black">Clues</h3>
-          <ProgressBar label="Crossword Progress" value={completeWords.length} total={vocabularySet.items.length} />
+          <ProgressBar label="Crossword Progress" value={completeWords.length} total={crosswordItems.length} />
           <ClueList title="Across" entries={puzzle.entries.filter((entry) => entry.direction === 'across')} activeEntryId={activeEntry?.id} completeWords={completeWords} setActiveEntryId={setActiveEntryId} />
           <ClueList title="Down" entries={puzzle.entries.filter((entry) => entry.direction === 'down')} activeEntryId={activeEntry?.id} completeWords={completeWords} setActiveEntryId={setActiveEntryId} />
         </section>

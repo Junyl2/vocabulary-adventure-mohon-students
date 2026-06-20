@@ -24,8 +24,6 @@ function App() {
     setProgress((current) => updater(current));
   };
 
-  const resetProgressForSet = () => setProgress(emptyProgress(vocabularySet));
-
   return (
     <Layout page={page} setPage={setPage} vocabularySet={vocabularySet} progress={progress}>
       {page === 'home' && <HomePage setPage={setPage} vocabularySet={vocabularySet} progress={progress} />}
@@ -34,9 +32,9 @@ function App() {
           vocabularySet={vocabularySet}
           onVocabularyChange={(next) => {
             setVocabularySet(next);
+            setProgress(emptyProgress(next));
             setPage('home');
           }}
-          onProgressReset={resetProgressForSet}
         />
       )}
       {page === 'zigzag' && <ZigzagPuzzlePage vocabularySet={vocabularySet} progress={progress} updateProgress={updateProgress} setPage={setPage} />}

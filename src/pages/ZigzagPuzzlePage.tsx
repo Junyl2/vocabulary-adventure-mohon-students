@@ -12,11 +12,12 @@ type ZigzagProps = {
 };
 
 export function ZigzagPuzzlePage({ vocabularySet, progress, updateProgress, setPage }: ZigzagProps) {
-  const puzzle = useMemo(() => generateZigzagPuzzle(vocabularySet.items), [vocabularySet]);
+  const zigzagItems = vocabularySet.zigzagItems;
+  const puzzle = useMemo(() => generateZigzagPuzzle(zigzagItems), [zigzagItems]);
   const [selected, setSelected] = useState<GridPoint[]>([]);
   const [message, setMessage] = useState('Choose a word from the bank, then tap the letters that spell it.');
   const [tone, setTone] = useState<'info' | 'good' | 'try'>('info');
-  const found = progress.zigzagFoundWords.filter((word) => vocabularySet.items.some((item) => item.word === word));
+  const found = progress.zigzagFoundWords.filter((word) => zigzagItems.some((item) => item.word === word));
   const selectedKeys = new Set(selected.map(pointKey));
   const selectedWord = selected.map((point) => puzzle.grid[point.row][point.col]).join('');
   const foundKeys = new Set(
@@ -24,7 +25,7 @@ export function ZigzagPuzzlePage({ vocabularySet, progress, updateProgress, setP
       .filter((placement) => found.includes(placement.word))
       .flatMap((placement) => placement.path.map(pointKey)),
   );
-  const allDone = vocabularySet.items.length > 0 && found.length === vocabularySet.items.length;
+  const allDone = zigzagItems.length > 0 && found.length === zigzagItems.length;
 
   const chooseCell = (point: GridPoint) => {
     if (foundKeys.has(pointKey(point))) return;
@@ -65,13 +66,13 @@ export function ZigzagPuzzlePage({ vocabularySet, progress, updateProgress, setP
     updateProgress((current) => ({ ...current, zigzagFoundWords: nextFound }));
     setSelected([]);
     setTone('good');
-    setMessage(nextFound.length === vocabularySet.items.length ? 'Amazing! You found every zigzag word!' : `Great job! You found ${match.word}.`);
+    setMessage(nextFound.length === zigzagItems.length ? 'Amazing! You found every zigzag word!' : `Great job! You found ${match.word}.`);
   };
 
   const giveHint = () => {
     const next = puzzle.placements.find((placement) => !found.includes(placement.word));
     if (!next) return;
-    const item = vocabularySet.items.find((word) => word.word === next.word);
+    const item = zigzagItems.find((word) => word.word === next.word);
     setSelected([next.path[0]]);
     setTone('info');
     setMessage(`Hint: ${next.word} starts with ${next.word[0]}. ${item?.definition ?? 'Use the word bank to help.'}`);
@@ -84,7 +85,7 @@ export function ZigzagPuzzlePage({ vocabularySet, progress, updateProgress, setP
     setMessage('Fresh start! Pick any word from the word bank.');
   };
 
-  if (!vocabularySet.items.length) {
+  if (!zigzagItems.length) {
     return (
       <section className="panel text-center">
         <h2 className="text-4xl font-black">Zigzag Word Puzzle</h2>
@@ -102,7 +103,7 @@ export function ZigzagPuzzlePage({ vocabularySet, progress, updateProgress, setP
             <h2 className="text-4xl font-black">Zigzag Word Puzzle</h2>
             <p className="mt-2 text-lg font-bold text-slate-700">Choose a word from the bank, then tap the letters that spell it.</p>
           </div>
-          <div className="rounded-3xl bg-emerald-100 px-5 py-3 text-xl font-black text-emerald-950">{found.length} of {vocabularySet.items.length} words found</div>
+          <div className="rounded-3xl bg-emerald-100 px-5 py-3 text-xl font-black text-emerald-950">{found.length} of {zigzagItems.length} words found</div>
         </div>
 
         <div className="mt-5 pb-2">
@@ -151,9 +152,9 @@ export function ZigzagPuzzlePage({ vocabularySet, progress, updateProgress, setP
       <aside className="flex flex-col gap-4">
         <section className="panel">
           <h3 className="text-2xl font-black">Word Bank</h3>
-          <ProgressBar label="Zigzag Progress" value={found.length} total={vocabularySet.items.length} />
+          <ProgressBar label="Zigzag Progress" value={found.length} total={zigzagItems.length} />
           <div className="mt-4 grid gap-2">
-            {vocabularySet.items.map((item) => (
+            {zigzagItems.map((item) => (
               <div key={item.id} className={`rounded-2xl p-3 ${found.includes(item.word) ? 'bg-emerald-100 text-emerald-950' : 'bg-white shadow'}`}>
                 <p className="text-lg font-black">{found.includes(item.word) ? '✓ ' : ''}{item.word}</p>
                 <p className="text-sm font-bold text-slate-700">{item.definition}</p>

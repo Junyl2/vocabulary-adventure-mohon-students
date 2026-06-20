@@ -31,13 +31,13 @@ export function HomePage({ setPage, vocabularySet, progress }: { setPage: (page:
         <section className="panel">
           <h3 className="text-2xl font-black">Current Vocabulary Set</h3>
           <p className="mt-2 rounded-3xl bg-cyan-100 p-4 text-2xl font-black text-cyan-950">{vocabularySet.title}</p>
-          <p className="mt-3 font-bold text-slate-700">{vocabularySet.items.length} words ready to play.</p>
+          <p className="mt-3 font-bold text-slate-700">{vocabularySet.zigzagItems.length} Zigzag words and {vocabularySet.crosswordItems.length} Crossword words ready to play.</p>
         </section>
         <section className="panel">
           <h3 className="text-2xl font-black">Student Progress</h3>
           <div className="mt-4 grid gap-4">
-            <ProgressBar label="Zigzag Puzzle" value={progress.zigzagFoundWords.length} total={vocabularySet.items.length} />
-            <ProgressBar label="Crossword Puzzle" value={progress.crosswordCompleteWords.length} total={vocabularySet.items.length} />
+            <ProgressBar label="Zigzag Puzzle" value={progress.zigzagFoundWords.length} total={vocabularySet.zigzagItems.length} />
+            <ProgressBar label="Crossword Puzzle" value={progress.crosswordCompleteWords.length} total={vocabularySet.crosswordItems.length} />
           </div>
         </section>
       </aside>

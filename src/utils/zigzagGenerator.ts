@@ -30,11 +30,7 @@ export function generateZigzagPuzzle(items: VocabularyItem[]): ZigzagPuzzle {
   const unplacedWords: string[] = [];
 
   words.forEach((word, wordIndex) => {
-    const path = findPathForWord(word, grid, wordIndex);
-    if (!path) {
-      unplacedWords.push(word);
-      return;
-    }
+    const path = findPathForWord(word, grid, wordIndex) ?? appendGuaranteedZigzagPath(word, grid);
     path.forEach((point, letterIndex) => {
       grid[point.row][point.col] = word[letterIndex];
     });
@@ -48,6 +44,17 @@ export function generateZigzagPuzzle(items: VocabularyItem[]): ZigzagPuzzle {
     placements,
     unplacedWords,
   };
+}
+
+function appendGuaranteedZigzagPath(word: string, grid: (string | null)[][]): GridPoint[] {
+  const baseRow = grid.length;
+  const cols = Math.max(grid[0]?.length ?? 0, word.length);
+  grid.push(Array.from({ length: cols }, () => null));
+  grid.push(Array.from({ length: cols }, () => null));
+  return word.split('').map((_, index) => ({
+    row: baseRow + (index % 2),
+    col: index,
+  }));
 }
 
 function findPathForWord(word: string, grid: (string | null)[][], wordIndex: number): GridPoint[] | null {

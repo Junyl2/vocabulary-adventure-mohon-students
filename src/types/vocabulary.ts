@@ -7,7 +7,8 @@ export type VocabularyItem = {
 
 export type VocabularySet = {
   title: string;
-  items: VocabularyItem[];
+  zigzagItems: VocabularyItem[];
+  crosswordItems: VocabularyItem[];
   updatedAt: number;
 };
 

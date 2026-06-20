@@ -27,8 +27,8 @@ export function Layout({ page, setPage, vocabularySet, progress, children }: Lay
 
         <section className="grid gap-3 sm:grid-cols-3">
           <StatusPill label="Vocabulary Set" value={vocabularySet.title} tone="cyan" />
-          <StatusPill label="Zigzag Found" value={`${progress.zigzagFoundWords.length}/${vocabularySet.items.length}`} tone="emerald" />
-          <StatusPill label="Crossword Done" value={`${progress.crosswordCompleteWords.length}/${vocabularySet.items.length}`} tone="amber" />
+          <StatusPill label="Zigzag Found" value={`${progress.zigzagFoundWords.length}/${vocabularySet.zigzagItems.length}`} tone="emerald" />
+          <StatusPill label="Crossword Done" value={`${progress.crosswordCompleteWords.length}/${vocabularySet.crosswordItems.length}`} tone="amber" />
         </section>
 
         {children}

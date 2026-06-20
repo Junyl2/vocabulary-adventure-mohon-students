@@ -32,7 +32,6 @@ type Coord = { row: number; col: number };
 export function generateCrosswordPuzzle(items: VocabularyItem[]): CrosswordPuzzle {
   const sorted = [...items].filter((item) => item.word).sort((a, b) => b.word.length - a.word.length);
   const placements: Placement[] = [];
-  const extraPractice: VocabularyItem[] = [];
 
   sorted.forEach((item, index) => {
     if (index === 0) {
@@ -41,7 +40,7 @@ export function generateCrosswordPuzzle(items: VocabularyItem[]): CrosswordPuzzl
     }
     const next = findPlacement(item, placements);
     if (next) placements.push(toPlacement(item, placements.length + 1, next.row, next.col, next.direction));
-    else extraPractice.push(item);
+    else placements.push(toPlacement(item, placements.length + 1, nextOpenRow(placements), 0, 'across'));
   });
 
   const normalized = normalizePlacements(placements);
@@ -49,7 +48,7 @@ export function generateCrosswordPuzzle(items: VocabularyItem[]): CrosswordPuzzl
   return {
     grid,
     entries: normalized,
-    extraPractice,
+    extraPractice: [],
     rows: grid.length,
     cols: grid[0]?.length ?? 0,
   };
@@ -74,6 +73,11 @@ function findPlacement(item: VocabularyItem, placements: Placement[]): { row: nu
     }
   }
   return null;
+}
+
+function nextOpenRow(placements: Placement[]) {
+  const rows = placements.flatMap((entry) => cellsForEntry(entry).map((cell) => cell.row));
+  return (rows.length ? Math.max(...rows) : 0) + 2;
 }
 
 function coordinateFor(entry: Pick<Placement, 'row' | 'col' | 'direction'>, index: number): Coord {
